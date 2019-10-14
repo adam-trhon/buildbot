@@ -318,6 +318,10 @@ class Git(Source, GitStepMixin):
             if rc == RC_SUCCESS:
                 fetch_required = False
 
+        # If building tag, make sure it actually exists in repo.
+        if self.branch and self.branch.startswith("refs/tags/"):
+            fetch_required = True
+
         if fetch_required:
             command = ['fetch', '-t', self.repourl, self.branch]
             # If the 'progress' option is set, tell git fetch to output
