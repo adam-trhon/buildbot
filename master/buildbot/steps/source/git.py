@@ -344,10 +344,11 @@ class Git(Source, GitStepMixin):
         abandonOnFailure = not self.retryFetch and not self.clobberOnFailure
         res = yield self._dovccmd(command, abandonOnFailure)
 
-        # Rename the branch if needed.
-        if res == RC_SUCCESS and self.branch != 'HEAD':
-            # Ignore errors
-            yield self._dovccmd(['checkout', '-B', self.branch], abandonOnFailure=False)
+        if self.branch and not self.branch.startswith("refs/tags/"):
+            # Rename the branch if needed.
+            if res == RC_SUCCESS and self.branch != 'HEAD':
+                # Ignore errors
+                yield self._dovccmd(['checkout', '-B', self.branch], abandonOnFailure=False)
 
         return res
 
